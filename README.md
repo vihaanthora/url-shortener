@@ -1,2 +1,2 @@
 # url-shortener
-Shorten a URL using this application
+This is a project that is to be made under IITISoC '22 under the CLI/Extension Problem Statement. The main task involves creating a fully functional URL shortening application. 
