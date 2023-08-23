@@ -1,6 +1,13 @@
 # url-shortener
-This is a project that is to be made under IITISoC '22 under the CLI/Extension Problem Statement. The main task involves creating a fully functional URL shortening application. 
+This project provides a functional URL shortener that allows a user to enter a URL and generate a shortened URL (including a custom path).
 
-### Some references
-- [original shortener](https://bitly.com/)
-- _Add here_
+### Todo
+- Create an endpoint to receive the URL onto the server.
+- Create a shortened URL or take the user's input.
+- Store the original and shortened URL in a db
+- (Optional) Generate a QR corresponding to the URL.
+
+### Tech Stacks
+- Python
+- FastAPI
+- MongoDB
