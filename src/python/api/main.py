@@ -1,4 +1,6 @@
 import logging
+import json
+import os
 
 from fastapi import FastAPI
 from pymongo.mongo_client import MongoClient
@@ -13,7 +15,12 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup_event():
-    uri = "mongodb+srv://vihaanthora:oZZFdM1uDy9yt4MF@test-cluster.4rw4pqs.mongodb.net/?retryWrites=true&w=majority"
+    config_path = os.path.join(
+        os.path.dirname(__file__), "..", "..", "..", "config.json"
+    )
+    with open(config_path) as secrets_file:
+        secrets = json.load(secrets_file)
+    uri = secrets["MONGODB_URI"]
     # Create a new client and connect to the server
     app.client = MongoClient(uri, server_api=ServerApi("1"))
     # Send a ping to confirm a successful connection
@@ -28,7 +35,7 @@ def shutdown_event():
     app.client.close()
 
 
-@app.get("/")
+@app.get("/api")
 def main(url: str | None = None, custom: str | None = None):
     if url is None:
         return {"Hello": "World"}
