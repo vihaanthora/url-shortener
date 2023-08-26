@@ -51,13 +51,19 @@ def encode(url: str | None = None, custom: str | None = None):
     else:
         db = app.client.url_shortener
         mappings = db.mappings
+        code = ""
         if custom == "":
             custom = None
-        if custom is not None and mappings.find_one({"shortened": '_' + custom}) is not None:
-            logging.info(
-                "Custom string already exists in the db, please enter another!"
-            )
-            return {"shortened": "error"}
+        if custom is not None and mappings.find_one({"shortened": "_" + custom}) is not None:
+            row = mappings.find_one({"shortened": "_" + custom})
+            if row["original"] != url:
+                logging.info(
+                    "Custom string already exists in the db, please enter another!"
+                )
+                return {"shortened": "error"}
+            else:
+                return {"shortened": custom}
+
         existing = mappings.find_one({"original": url})
         if existing is not None and custom is None and existing["shortened"][0] != "_":
             code = existing["shortened"]
@@ -92,7 +98,6 @@ def redirect(shortened: str):
     if row is not None:
         original_url = row["original"]
         if not original_url.startswith(("http://", "https://")):
-            # Assume HTTPS if the server is using HTTPS
             original_url = f"http://{original_url}"
         return RedirectResponse(url=original_url, status_code=302)
     else:
