@@ -11,3 +11,4 @@ This project provides a functional URL shortener that allows a user to enter a U
 - Python
 - FastAPI
 - MongoDB
+- Sveltekit
