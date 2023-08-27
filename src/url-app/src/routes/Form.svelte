@@ -1,16 +1,34 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	let originalUrl = '';
 	let customUrl = '';
 	let shortenedUrl = '';
+	let totalUrls = 'Loading...';
+	let copied = false;
 	let shortenedUrlSection: HTMLDivElement;
 	let errorSection: HTMLDivElement;
 	const serverUrl = 'http://127.0.0.1:8000';
 	let error = '';
+	async function copyToClipboard() {
+		try {
+			await navigator.clipboard.writeText(shortenedUrl);
+			copied = true;
+		} catch (error) {
+			console.error('Error copying to clipboard:', error);
+			copied = false;
+		}
+	}
 	async function shortenUrl() {
 		error = '';
 		shortenedUrl = '';
+		copied = false;
 		shortenedUrlSection.classList.add('hidden');
 		errorSection.classList.add('hidden');
+		if (originalUrl == '') {
+			error = 'Original URL cannot be empty!';
+			errorSection.classList.remove('hidden');
+			return;
+		}
 		const response = await fetch(`${serverUrl}/api?url=${originalUrl}&custom=${customUrl}`);
 		const data = await response.json();
 		if (data.shortened === 'error') {
@@ -20,11 +38,19 @@
 			shortenedUrl = serverUrl + '/' + data.shortened;
 			shortenedUrlSection.classList.remove('hidden');
 		}
+		fetchTotalUrls();
 	}
+	async function fetchTotalUrls() {
+		const response = await fetch(`${serverUrl}/api/total`);
+		const data = await response.json();
+		totalUrls = data.total;
+	}
+
+	onMount(fetchTotalUrls);
 </script>
 
-<main class="w-full flex flex-col h-screen content-center justify-center">
-	<div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md self-center">
+<main class="h-screen flex flex-col items-center justify-center">
+	<div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
 		<h1 class="text-2xl font-semibold mb-4">URL Shortener</h1>
 		<form id="urlShortenerForm" class="space-y-4">
 			<div>
@@ -33,16 +59,21 @@
 				<input
 					bind:value={originalUrl}
 					type="url"
-                    required
+					required
+					placeholder="Enter a valid URL"
+					autocomplete="off"
 					id="originalUrl"
 					name="originalUrl"
 					class="mt-1 p-2 w-full border rounded-lg"
 				/>
-				<label for="originalUrl" class="block text-sm font-medium text-gray-700 mt-2">Custom URL</label
+				<label for="originalUrl" class="block text-sm font-medium text-gray-700 mt-2"
+					>Custom String (if any)</label
 				>
 				<input
 					bind:value={customUrl}
 					type="text"
+					placeholder="Enter a custom string, eg. 'my-url'"
+					autocomplete="off"
 					id="customUrl"
 					name="customUrl"
 					class="mt-1 p-2 w-full border rounded-lg"
@@ -68,12 +99,21 @@
 					target="_blank">{shortenedUrl}</a
 				>
 			</p>
+			<button
+				class="bg-blue-500 text-white px-2 py-1 rounded-lg hover:bg-blue-600 mt-2"
+				on:click={copyToClipboard}
+			>
+				{copied ? 'Copied!' : 'Copy'}
+			</button>
 		</div>
 		<div id="errorSection" bind:this={errorSection} class="mt-4 hidden">
 			<p class="font-medium">Error: {error}</p>
 		</div>
+		<div class="mt-4 text-center">
+			<p class="text-gray-500">
+				Total URLs converted till date: <span id="totalUrls" class="font-semibold">{totalUrls}</span
+				>
+			</p>
+		</div>
 	</div>
 </main>
-
-<style>
-</style>

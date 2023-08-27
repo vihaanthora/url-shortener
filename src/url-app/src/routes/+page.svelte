@@ -10,6 +10,3 @@
 <section>
 	<Form />
 </section>
-
-<style>
-</style>

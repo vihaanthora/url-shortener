@@ -11,10 +11,10 @@
 </header>
 
 <style>
-	header {
+	/* header {
 		display: flex;
 		justify-content: space-between;
-	}
+	} */
 
 	.corner {
 		width: 3em;

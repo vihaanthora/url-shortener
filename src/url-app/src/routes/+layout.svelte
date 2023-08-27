@@ -3,12 +3,15 @@
 	import '../dist/output.css';
 </script>
 
-<div class="app">
+<div class="flex bg-vintage-bg">
 	<Header />
-	<main>
+	<main class="flex-grow">
 		<slot />
 	</main>
 </div>
 
 <style>
+	.bg-vintage-bg {
+		background-color: #f7f3e9;
+	}
 </style>

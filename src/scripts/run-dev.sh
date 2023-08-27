@@ -8,4 +8,4 @@ json_file="$script_dir/config.json"
 # Read the URL from JSON using jq
 export MONGO_URI=$(jq -r '.MONGODB_URI' "$json_file")
 
-uvicorn main:app --reload
+uvicorn main:app --host 0.0.0.0 --reload

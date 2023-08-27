@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 logging.basicConfig(level=logging.INFO)
 
 origins = [
-    "http://localhost:5173",
+    "*"
 ]
 
 app = FastAPI()
@@ -54,7 +54,10 @@ def encode(url: str | None = None, custom: str | None = None):
         code = ""
         if custom == "":
             custom = None
-        if custom is not None and mappings.find_one({"shortened": "_" + custom}) is not None:
+        if (
+            custom is not None
+            and mappings.find_one({"shortened": "_" + custom}) is not None
+        ):
             row = mappings.find_one({"shortened": "_" + custom})
             if row["original"] != url:
                 logging.info(
@@ -85,6 +88,14 @@ def encode(url: str | None = None, custom: str | None = None):
             code = code[1:]
         logging.info(code)
         return {"shortened": code}
+
+
+# fetches total number of urls stored in db
+@app.get("/api/total")
+def get_total():
+    db = app.client.url_shortener
+    mappings = db.mappings
+    return {"total": mappings.count_documents({})}
 
 
 # endpoint to redirect users to the main url
