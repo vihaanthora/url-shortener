@@ -29,13 +29,17 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     uri = os.environ.get("MONGO_URI")
-    # Create a new client and connect to the server
-    app.client = MongoClient(uri, server_api=ServerApi("1"))
-    # Send a ping to confirm a successful connection
-    app.client.admin.command("ping")
-    # Initialise the hash code generator
-    app.code_generator = HashCodeGenerator(app.client)
-    logging.info("Pinged your deployment. You successfully connected to MongoDB!")
+    try:
+        # Create a new client and connect to the server
+        app.client = MongoClient(uri, server_api=ServerApi("1"))
+        # Send a ping to confirm a successful connection
+        app.client.admin.command("ping")
+        # Initialise the hash code generator
+        app.code_generator = HashCodeGenerator(app.client)
+        logging.info("Pinged your deployment. You successfully connected to MongoDB!")
+    except Exception as e:
+        logging.exception(e)
+        raise HTTPException(status_code=500, detail=e)
 
 
 @app.on_event("shutdown")
