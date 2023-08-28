@@ -35,6 +35,3 @@ class HashCodeGenerator:
             {"shortened": code}
         )
         return existing is not None
-
-
-code_generator = HashCodeGenerator(client)

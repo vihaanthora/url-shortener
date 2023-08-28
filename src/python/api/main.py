@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from logger import logger
 from routers.redirect import router as redirect_router
 from routes import router as api_router
-from utils.code_generator import HashCodeGenerator, code_generator
 from utils.mongo_client import client
 
 origins = ["*"]
@@ -26,9 +25,6 @@ async def startup_event():
         # Send a ping to initialise the connection
         client.admin.command("ping")
         logger.info("Pinged your deployment. You successfully connected to MongoDB!")
-        # Warm up code generator
-        code_generator.generate_code("https://www.google.com")
-        logger.info("Warmed up code generator!")
     except Exception as e:
         logger.exception(e)
         raise HTTPException(status_code=500, detail=e)

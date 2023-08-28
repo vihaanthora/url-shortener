@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from logger import logger
 from models.url import URL
-from utils.code_generator import code_generator
+from utils.code_generator import HashCodeGenerator
 from utils.mongo_client import client
 
 router = APIRouter()
+code_generator = HashCodeGenerator(client)
 
 
 # endpoint that encodes a url and stores it's mapping in the db
