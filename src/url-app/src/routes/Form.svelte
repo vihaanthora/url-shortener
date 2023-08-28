@@ -7,7 +7,7 @@
 	let copied = false;
 	let shortenedUrlSection: HTMLDivElement;
 	let errorSection: HTMLDivElement;
-	const serverUrl = 'http://localhost:8000';
+	const serverUrl = 'https://url-shortener-r1o1.onrender.com';
 	let error = '';
 	async function copyToClipboard() {
 		try {
