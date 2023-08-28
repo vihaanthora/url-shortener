@@ -58,7 +58,7 @@
 	onMount(fetchTotalUrls);
 </script>
 
-<main class="h-screen flex flex-col items-center justify-center">
+<main class="flex justify-center p-6">
 	<div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
 		<h1 class="text-2xl font-semibold mb-4">URL Shortener</h1>
 		<form id="urlShortenerForm" class="space-y-4">

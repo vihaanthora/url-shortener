@@ -3,9 +3,9 @@
 	import '../dist/output.css';
 </script>
 
-<div class="flex bg-vintage-bg">
+<div class="bg-vintage-bg h-screen">
 	<Header />
-	<main class="flex-grow">
+	<main>
 		<slot />
 	</main>
 </div>
