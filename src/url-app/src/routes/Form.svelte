@@ -7,7 +7,7 @@
 	let copied = false;
 	let shortenedUrlSection: HTMLDivElement;
 	let errorSection: HTMLDivElement;
-	const serverUrl = 'http://127.0.0.1:8000';
+	const serverUrl = 'http://localhost:8000';
 	let error = '';
 	async function copyToClipboard() {
 		try {
@@ -18,7 +18,7 @@
 			copied = false;
 		}
 	}
-	async function shortenUrl() {
+	async function shortenUrl(e: any) {
 		error = '';
 		shortenedUrl = '';
 		copied = false;
@@ -29,10 +29,19 @@
 			errorSection.classList.remove('hidden');
 			return;
 		}
-		const response = await fetch(`${serverUrl}/api?url=${originalUrl}&custom=${customUrl}`);
+		const response = await fetch(`${serverUrl}/api/url/shorten`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ original: originalUrl, custom: customUrl })
+		});
 		const data = await response.json();
 		if (data.shortened === 'error') {
 			error = 'Custom string is already mapped to another URL!';
+			errorSection.classList.remove('hidden');
+		} else if (data.shortened === undefined) {
+			error = 'Invalid URL!';
 			errorSection.classList.remove('hidden');
 		} else {
 			shortenedUrl = serverUrl + '/' + data.shortened;
@@ -41,7 +50,7 @@
 		fetchTotalUrls();
 	}
 	async function fetchTotalUrls() {
-		const response = await fetch(`${serverUrl}/api/total`);
+		const response = await fetch(`${serverUrl}/api/url/total`);
 		const data = await response.json();
 		totalUrls = data.total;
 	}
@@ -82,7 +91,7 @@
 			<div>
 				<button
 					on:click={shortenUrl}
-					type="submit"
+					type="button"
 					class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
 				>
 					Shorten URL

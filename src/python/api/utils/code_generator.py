@@ -1,6 +1,8 @@
 import hashlib
-import string
 import random
+import string
+
+from utils.mongo_client import client
 
 
 class HashCodeGenerator:
@@ -33,3 +35,6 @@ class HashCodeGenerator:
             {"shortened": code}
         )
         return existing is not None
+
+
+code_generator = HashCodeGenerator(client)
